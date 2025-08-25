@@ -1213,7 +1213,6 @@
 // document.head.appendChild(style);
 
 // export default App;
-
 // src/App.jsx
 import { useRef, useState, useEffect } from "react";
 import "./App.css";
@@ -1267,20 +1266,11 @@ const COUNTRY_FLAGS = {
 
 function App() {
   const audioRef = useRef(null);
-  const canvasRef = useRef(null);
   const [currentStation, setCurrentStation] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(0.7);
   const [artist, setArtist] = useState("Unknown Artist");
   const [title, setTitle] = useState("Live Radio");
-
-  // Visualizer state
-  const [isVisualizerActive, setIsVisualizerActive] = useState(false);
-
-  // Audio Context (for visualizer)
-  const audioContextRef = useRef(null);
-  const analyserRef = useRef(null);
-  const animationRef = useRef(null);
 
   // Auto-resume last station
   useEffect(() => {
@@ -1394,110 +1384,6 @@ function App() {
     }
   };
 
-  // Waveform Visualizer (Real or Fake)
-  useEffect(() => {
-    if (!currentStation || !isPlaying) {
-      if (animationRef.current) cancelAnimationFrame(animationRef.current);
-      if (audioContextRef.current) audioContextRef.current.close();
-      audioContextRef.current = null;
-      analyserRef.current = null;
-      setIsVisualizerActive(false);
-      return;
-    }
-
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext('2d');
-    canvas.width = 300;
-    canvas.height = 80;
-
-    // Try to use real audio data
-    const setupRealVisualizer = () => {
-      try {
-        const audioEl = audioRef.current;
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        const ac = new AudioContext();
-        const analyser = ac.createAnalyser();
-        const source = ac.createMediaElementSource(audioEl);
-
-        source.connect(analyser);
-        analyser.connect(ac.destination);
-        analyser.fftSize = 128;
-
-        const bufferLength = analyser.frequencyBinCount;
-        const dataArray = new Uint8Array(bufferLength);
-
-        audioContextRef.current = ac;
-        analyserRef.current = analyser;
-        setIsVisualizerActive(true);
-
-        const draw = () => {
-          animationRef.current = requestAnimationFrame(draw);
-          analyser.getByteTimeDomainData(dataArray);
-
-          ctx.fillStyle = 'rgba(0,0,0,0)';
-          ctx.fillRect(0, 0, canvas.width, canvas.height);
-          ctx.lineWidth = 2;
-          ctx.strokeStyle = '#fbbf24';
-
-          ctx.beginPath();
-          const sliceWidth = canvas.width / bufferLength;
-          let x = 0;
-
-          for (let i = 0; i < bufferLength; i++) {
-            const v = dataArray[i] / 128.0;
-            const y = (v * canvas.height) / 2 + canvas.height / 2;
-            if (i === 0) ctx.moveTo(x, y);
-            else ctx.lineTo(x, y);
-            x += sliceWidth;
-          }
-          ctx.stroke();
-        };
-
-        draw();
-      } catch (err) {
-        console.warn("Real visualizer failed (CORS)", err);
-        setupFakeVisualizer();
-      }
-    };
-
-    // Fake pulsing wave (when real data is blocked)
-    const setupFakeVisualizer = () => {
-      setIsVisualizerActive(true);
-      let phase = 0;
-
-      const draw = () => {
-        animationRef.current = requestAnimationFrame(draw);
-        phase += 0.05;
-
-        ctx.fillStyle = 'rgba(0,0,0,0)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.lineWidth = 2;
-        ctx.strokeStyle = '#fbbf24';
-
-        ctx.beginPath();
-        for (let x = 0; x < canvas.width; x++) {
-          const v = 0.5 + 0.4 * Math.sin(x * 0.05 + phase);
-          const y = v * canvas.height;
-          if (x === 0) ctx.moveTo(x, y);
-          else ctx.lineTo(x, y);
-        }
-        ctx.stroke();
-      };
-
-      draw();
-    };
-
-    // Try real first, fall back to fake
-    setupRealVisualizer();
-
-    return () => {
-      if (animationRef.current) cancelAnimationFrame(animationRef.current);
-      if (audioContextRef.current) audioContextRef.current.close();
-    };
-  }, [currentStation, isPlaying]);
-
   return (
     <div
       className="App"
@@ -1506,7 +1392,7 @@ function App() {
       }}
     >
       <header className="header">
-        <h1>Global Radio</h1>
+        <h1>Abd Global Radio</h1>
         <p>Live from around the world 🌍</p>
       </header>
 
@@ -1520,10 +1406,16 @@ function App() {
         </div>
       )}
 
-      {/* Visualizer */}
-      {isVisualizerActive && (
+      {/* Simple Animated Waveform (Always Works) */}
+      {isPlaying && (
         <div className="visualizer-container">
-          <canvas ref={canvasRef} className="visualizer" />
+          <div className="waveform">
+            <div className="wave"></div>
+            <div className="wave"></div>
+            <div className="wave"></div>
+            <div className="wave"></div>
+            <div className="wave"></div>
+          </div>
           <p className="visualizer-label">Sound Wave</p>
         </div>
       )}
@@ -1571,7 +1463,7 @@ function App() {
       </div>
 
       <footer className="footer">
-        One Radio Check • Works Offline
+        spartaw One Radio • Works Offline
       </footer>
 
       <audio ref={audioRef} preload="auto" />
