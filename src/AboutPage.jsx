@@ -11,7 +11,7 @@ function AboutPage({ onClose }) {
         </button>
 
         <div className="about-content">
-          <img src="../src/assets/photoo.jpg" alt="Abd" className="about-photo" />
+          <img src="./favicon.jpg" alt="Abd" className="about-photo" />
           <h1>Abd Global Radio</h1>
           <p className="about-tagline">Listen to the world, one station at a time 🌍📻</p>
 
