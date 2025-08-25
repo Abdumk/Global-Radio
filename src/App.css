@@ -201,12 +201,35 @@ body {
   color: white;
 }
 
-.footer {
-  font-size: 0.8rem;
-  color: #718096;
-  margin-top: 30px;
+.footer-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.95rem;
+  margin-bottom: 8px;
 }
 
+.footer-link {
+  color: #39f904;
+  transition: text-shadow 0.2s;
+}
+
+.footer-link:hover {
+  text-shadow: 0 0 8px rgba(251, 191, 36, 0.6);
+}
+
+.footer-separator {
+  color: #a0aec0;
+  font-size: 1.1rem;
+}
+
+.footer-text {
+  font-size: 0.8rem;
+  color: #fbde05;
+  text-align: center;
+  margin-top: 4px;
+}
 @media (max-width: 768px) {
   .App {
     padding: 15px;
@@ -217,6 +240,29 @@ body {
    .now-playing {
     display: none;
   }
+ 
 }
 
 
+
+/* Mobile: Reduce height and font */
+/* @media (max-width: 480px) {
+  .footer {
+    font-size: 0.7rem;
+    margin-top: 12px;
+    padding: 6px 12px;
+  }
+
+  .footer-content {
+    font-size: 0.8rem;
+    gap: 8px;
+  }
+
+  .footer-link {
+    font-size: 0.85rem;
+  }
+
+  .footer-separator {
+    font-size: 0.9rem;
+  }
+} */

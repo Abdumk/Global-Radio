@@ -1,6 +1,6 @@
 {
-  "name": "Global Radio",
-  "short_name": "Radio",
+  "name": "Abdu Global Radio",
+  "short_name": "Abd GR",
   "description": "Beautiful offline radio player",
   "start_url": "/",
   "display": "standalone",

@@ -1214,10 +1214,13 @@
 
 // export default App;
 // src/App.jsx
+
+
 import { useRef, useState, useEffect } from "react";
 import "./App.css";
+import AboutPage from "./AboutPage"; // ✅ Correct
 
-// 🌍 Stations with gradient backgrounds
+
 const STATIONS = [
   {
     id: "fip",
@@ -1256,7 +1259,6 @@ const STATIONS = [
   },
 ];
 
-// 🌍 Country Flags
 const COUNTRY_FLAGS = {
   FR: "🇫🇷",
   US: "🇺🇸",
@@ -1271,8 +1273,24 @@ function App() {
   const [volume, setVolume] = useState(0.7);
   const [artist, setArtist] = useState("Unknown Artist");
   const [title, setTitle] = useState("Live Radio");
+  const [isDarkMode, setIsDarkMode] = useState(true);
+  const [showAbout, setShowAbout] = useState(false);
 
-  // Auto-resume last station
+  // Load theme
+  useEffect(() => {
+    const saved = localStorage.getItem("theme");
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    setIsDarkMode(saved ? saved === "dark" : prefersDark);
+  }, []);
+
+  // Save theme
+  const toggleTheme = () => {
+    const newMode = !isDarkMode;
+    setIsDarkMode(newMode);
+    localStorage.setItem("theme", newMode ? "dark" : "light");
+  };
+
+  // Auto-resume
   useEffect(() => {
     const saved = localStorage.getItem("radio-state");
     if (saved) {
@@ -1280,9 +1298,7 @@ function App() {
       const station = STATIONS.find(s => s.id === stationId);
       if (station) {
         setCurrentStation(station);
-        if (playing) {
-          setIsPlaying(true); // But don't auto-play — wait for interaction
-        }
+        if (playing) setIsPlaying(true);
       }
     }
   }, []);
@@ -1333,16 +1349,11 @@ function App() {
         const playPromise = audioRef.current.play();
         if (playPromise !== undefined) {
           playPromise
-            .then(() => {
-              setIsPlaying(true);
-            })
+            .then(() => setIsPlaying(true))
             .catch((err) => {
-              // Handle autoplay policy (from goo.gl/xX8pDD)
               if (err.name === "NotAllowedError") {
-                console.error("Playback failed: User interaction required");
                 alert("Please click 'Play' to start audio");
               } else if (err.name !== "AbortError") {
-                // Ignore AbortError (harmless when switching)
                 console.error("Play error:", err);
               }
             });
@@ -1362,9 +1373,7 @@ function App() {
       const playPromise = audioRef.current.play();
       if (playPromise !== undefined) {
         playPromise
-          .then(() => {
-            setIsPlaying(true);
-          })
+          .then(() => setIsPlaying(true))
           .catch((err) => {
             if (err.name === "NotAllowedError") {
               console.error("Playback failed: User interaction required");
@@ -1391,11 +1400,16 @@ function App() {
         background: currentStation?.gradient || "linear-gradient(135deg, #1a1a2e, #16213e)",
       }}
     >
+      {/* Header with Title, About, and Theme */}
       <header className="header">
-        <h1>Abd Global Radio</h1>
-        <p>Live from around the world 🌍</p>
+        <div className="header-left">
+          <h1>Abd Global Radio</h1>
+          <p>Live from around the world 🌍</p>
+        </div>
+     
       </header>
 
+      {/* Now Playing */}
       {currentStation && (
         <div className="now-playing">
           <h2>{currentStation.name}</h2>
@@ -1406,7 +1420,7 @@ function App() {
         </div>
       )}
 
-      {/* Simple Animated Waveform (Always Works) */}
+      {/* Waveform */}
       {isPlaying && (
         <div className="visualizer-container">
           <div className="waveform">
@@ -1462,9 +1476,35 @@ function App() {
         })}
       </div>
 
-      <footer className="footer">
-        spartaw One Radio • Works Offline
-      </footer>
+    {/* Footer with clickable text */}
+<footer className="footer">
+  <div className="footer-content">
+    <span
+      className="footer-link"
+      onClick={() => setShowAbout(true)}
+      style={{ cursor: "pointer" }}
+      aria-label="About this app"
+    >
+      ℹ️ About
+    </span>
+    <span className="footer-separator">•</span>
+    <span
+      className="footer-link"
+      onClick={toggleTheme}
+      style={{ cursor: "pointer" }}
+      aria-label={isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
+    >
+      {isDarkMode ? "☀️ Light" : "🌙 Dark"}
+    </span>
+  </div>
+  <div className="footer-text">
+  <strong> 
+      Spartaw</strong> One Radio • Works Offline
+  </div>
+</footer>
+
+      {/* About Page */}
+      {showAbout && <AboutPage onClose={() => setShowAbout(false)} />}
 
       <audio ref={audioRef} preload="auto" />
     </div>
