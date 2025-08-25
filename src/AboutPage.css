@@ -51,7 +51,7 @@
 }
 
 .about-content {
-  padding: 300px 30px 30px;
+  padding: 500px 30px 30px;
   color: white;
   text-align: center;
   flex: 1;
@@ -121,10 +121,22 @@
 }
 
 .about-section p {
-  color: #e2e8f0;
+  color: #b9c5d4;
   line-height: 1.6;
 }
+.contact-info a {
+  color: #feb703;
+  text-decoration: none;
+}
 
+.contact-info a:hover {
+  text-decoration: none;
+  color: #14fc03;
+}
+
+.about-section p {
+  margin: 8px 0;
+}
 .about-done {
   margin: 20px 30px 30px;
   padding: 12px 24px;

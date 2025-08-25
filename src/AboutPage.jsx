@@ -39,9 +39,20 @@ function AboutPage({ onClose }) {
 
           <div className="about-section">
             <h2>👨‍💻 Made by Abdu Mk</h2>
-        
+
+            {/* Clickable Contact Info */}
+            <div className="contact-info">
+  <p>📧 Email:<a href="mailto:abdumk148@gmil.com" target="_blank" rel="noopener noreferrer"> abdumk148@gmil.com</a></p>
+  <p>💬WhatsApp: <a href="https://wa.me/252934677172" target="_blank" rel="noopener noreferrer">0934677172</a></p>
+  <p>✈️Telegram:<a href="https://t.me/Abdmk1" target="_blank" rel="noopener noreferrer"> @Abdmk1</a></p>
+</div>
+
+            {/* Call to Action */}
+            <p><strong>Need a website or mobile app?</strong> Feel free to contact me for custom web & app development! 🚀</p>
+
             <p><strong>One Radio. One World.</strong></p>
           </div>
+
 
           <button className="about-done" onClick={onClose}>
             Back to Radio
