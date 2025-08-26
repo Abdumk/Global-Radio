@@ -1253,14 +1253,47 @@ const STATIONS = [
     country: "DE",
     gradient: "linear-gradient(135deg, #ef4444, #1f2937)",
   },
+  {
+    id: "triplej",
+    name: "Triple J (Australia)",
+    url: "https://live-radio01.mediahubaustralia.com/2TJW/mp3/",
+    country: "AU",
+    gradient: "linear-gradient(135deg, #f59e0b, #ef4444)",
+  },
+  {
+    id: "npr",
+    name: "NPR (USA)",
+    url: "https://npr-ice.streamguys1.com/live.mp3",
+    country: "US",
+    gradient: "linear-gradient(135deg, #2563eb, #16a34a)",
+  },
+
+  {
+    id: "rai",
+    name: "RAI Radio 1 (Italy)",
+    url: "https://icestreaming.rai.it/1.mp3",
+    country: "IT",
+    gradient: "linear-gradient(135deg, #22c55e, #0ea5e9)",
+  },
+  {
+    id: "abcjazz",
+    name: "ABC Jazz (Australia)",
+    url: "https://live-radio01.mediahubaustralia.com/JAZW/mp3/",
+    country: "AU",
+    gradient: "linear-gradient(135deg, #8b5cf6, #ec4899)",
+  },
+
 ];
 
 const COUNTRY_FLAGS = {
-  FR: "🇫🇷",
-  US: "🇺🇸",
-  CH: "🇨🇭",
-  DE: "🇩🇪",
+  FR: "🇫🇷", // France
+  US: "🇺🇸", // USA
+  CH: "🇨🇭", // Switzerland
+  DE: "🇩🇪", // Germany
+  AU: "🇦🇺", // Australia
+  IT: "🇮🇹", // Italy
 };
+
 
 function App() {
   const audioRef = useRef(null);
