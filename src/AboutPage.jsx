@@ -13,7 +13,9 @@ function AboutPage({ onClose }) {
         <div className="about-content">
           <img src="./favicon.jpg" alt="Abd" className="about-photo" />
           <h1>Abd Global Radio</h1>
-          <p className="about-tagline">Listen to the world, one station at a time 🌍📻</p>
+          <p className="about-tagline">
+            Listen to the world, one station at a time 🌍📻
+          </p>
 
           <div className="about-section">
             <h2>🎯 Purpose</h2>
@@ -42,17 +44,71 @@ function AboutPage({ onClose }) {
 
             {/* Clickable Contact Info */}
             <div className="contact-info">
-  <p>📧 Email:<a href="mailto:abdumk148@gmil.com" target="_blank" rel="noopener noreferrer"> abdumk148@gmil.com</a></p>
-  <p>💬WhatsApp: <a href="https://wa.me/252934677172" target="_blank" rel="noopener noreferrer">0934677172</a></p>
-  <p>✈️Telegram:<a href="https://t.me/Abdmk1" target="_blank" rel="noopener noreferrer"> @Abdmk1</a></p>
-</div>
+              <p>
+                📧 Email:
+                <a
+                  href="mailto:abdumk148@gmil.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {" "}
+                  abdumk148@gmil.com
+                </a>
+              </p>
+              <p>
+                💬WhatsApp:{" "}
+                <a
+                  href="https://wa.me/252934677172"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  0934677172
+                </a>
+              </p>
+              <p>
+                ✈️Telegram:
+                <a
+                  href="https://t.me/Abdmk1"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {" "}
+                  @Abdmk1
+                </a>
+              </p>
+              <p>
+                💼 LinkedIn:{" "}
+                <a
+                  href="https://www.linkedin.com/in/abdu-mk"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  abdu-mk
+                </a>
+              </p>
+
+              <p>
+                🌐 Portfolio:{" "}
+                <a
+                  href="https://abdumk.github.io/My-Portfolio/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  My-Portfolio
+                </a>
+              </p>
+            </div>
 
             {/* Call to Action */}
-            <p><strong>Need a website or mobile app?</strong> Feel free to contact me for custom web & app development! 🚀</p>
+            <p>
+              <strong>Need a website or mobile app?</strong> Feel free to
+              contact me for custom web & app development! 🚀
+            </p>
 
-            <p><strong>One Radio. One World.</strong></p>
+            <p>
+              <strong>One Radio. One World.</strong>
+            </p>
           </div>
-
 
           <button className="about-done" onClick={onClose}>
             Back to Radio

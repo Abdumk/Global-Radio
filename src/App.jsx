@@ -1,5 +1,3 @@
-
-
 // import { useRef, useState } from "react";
 // import { Play, Pause, Volume2, Volume1, VolumeX, Radio } from "lucide-react";
 
@@ -246,6 +244,7 @@
 // }
 
 // export default App;
+
 // import { useRef, useState, useEffect } from "react";
 // import { Play, Pause, Volume2, Volume1, VolumeX, Radio } from "lucide-react";
 
@@ -615,7 +614,6 @@
 // };
 
 // export default App;
-
 
 // import { useRef, useState, useEffect } from "react";
 // import { Play, Pause, Volume2, Volume1, VolumeX, Radio, Sun, Moon } from "lucide-react";
@@ -1215,11 +1213,9 @@
 // export default App;
 // src/App.jsx
 
-
 import { useRef, useState, useEffect } from "react";
 import "./App.css";
-import AboutPage from "./AboutPage"; // ✅ Correct
-
+import AboutPage from "./AboutPage";
 
 const STATIONS = [
   {
@@ -1275,12 +1271,20 @@ function App() {
   const [title, setTitle] = useState("Live Radio");
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [showAbout, setShowAbout] = useState(false);
+  const [dynamicBg, setDynamicBg] = useState(true);
 
-  // Load theme
+  // Load saved preferences on mount
   useEffect(() => {
-    const saved = localStorage.getItem("theme");
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    setIsDarkMode(saved ? saved === "dark" : prefersDark);
+    const savedTheme = localStorage.getItem("theme");
+    const prefersDark = window.matchMedia(
+      "(prefers-color-scheme: dark)"
+    ).matches;
+    const theme = savedTheme ? savedTheme === "dark" : prefersDark;
+    setIsDarkMode(theme);
+
+    const savedBg = localStorage.getItem("dynamicBg");
+    const bgEnabled = savedBg ? savedBg === "true" : true;
+    setDynamicBg(bgEnabled);
   }, []);
 
   // Save theme
@@ -1288,14 +1292,22 @@ function App() {
     const newMode = !isDarkMode;
     setIsDarkMode(newMode);
     localStorage.setItem("theme", newMode ? "dark" : "light");
+    document.body.className = newMode ? "dark" : "light"; // Sync body class
   };
 
-  // Auto-resume
+  // Toggle dynamic background
+  const toggleDynamicBg = () => {
+    const newValue = !dynamicBg;
+    setDynamicBg(newValue);
+    localStorage.setItem("dynamicBg", newValue);
+  };
+
+  // Auto-resume last station
   useEffect(() => {
     const saved = localStorage.getItem("radio-state");
     if (saved) {
       const { stationId, isPlaying: playing } = JSON.parse(saved);
-      const station = STATIONS.find(s => s.id === stationId);
+      const station = STATIONS.find((s) => s.id === stationId);
       if (station) {
         setCurrentStation(station);
         if (playing) setIsPlaying(true);
@@ -1303,30 +1315,35 @@ function App() {
     }
   }, []);
 
-  // Save state
+  // Save current station and play state
   useEffect(() => {
     if (currentStation) {
-      localStorage.setItem("radio-state", JSON.stringify({
-        stationId: currentStation.id,
-        isPlaying: isPlaying
-      }));
+      localStorage.setItem(
+        "radio-state",
+        JSON.stringify({
+          stationId: currentStation.id,
+          isPlaying,
+        })
+      );
     }
   }, [currentStation, isPlaying]);
 
-  // Fetch FIP metadata
+  // Fetch metadata for FIP
   useEffect(() => {
     if (currentStation?.id === "fip") {
       const fetchMeta = () => {
-        fetch("https://www.fip.fr/latest/api/graphql?operationName=GetLive&variables=%7B%7D&extensions=%7B%22persistedQuery%22:%7B%22version%22:1,%22sha256Hash%22:%22a44c0356e7865e490870718e6e5be3e89a25355765301798963d934941488285%22%7D%7D")
-          .then(r => r.json())
-          .then(data => {
+        fetch(
+          "https://www.fip.fr/latest/api/graphql?operationName=GetLive&variables=%7B%7D&extensions=%7B%22persistedQuery%22:%7B%22version%22:1,%22sha256Hash%22:%22a44c0356e7865e490870718e6e5be3e89a25355765301798963d934941488285%22%7D%7D"
+        )
+          .then((r) => r.json())
+          .then((data) => {
             const item = data?.data?.live;
             if (item) {
               setArtist(item.artist);
               setTitle(item.title);
             }
           })
-          .catch(() => {});
+          .catch(() => console.warn("Failed to fetch FIP metadata"));
       };
 
       fetchMeta();
@@ -1338,6 +1355,7 @@ function App() {
     }
   }, [currentStation]);
 
+  // Toggle station play/pause
   const toggleStation = (station) => {
     const cleanUrl = station.url.trim();
 
@@ -1352,9 +1370,9 @@ function App() {
             .then(() => setIsPlaying(true))
             .catch((err) => {
               if (err.name === "NotAllowedError") {
-                alert("Please click 'Play' to start audio");
-              } else if (err.name !== "AbortError") {
-                console.error("Play error:", err);
+                alert("Please interact with the page to enable audio.");
+              } else {
+                console.error("Playback error:", err);
               }
             });
         }
@@ -1362,7 +1380,6 @@ function App() {
     } else {
       if (isPlaying) {
         audioRef.current.pause();
-        setIsPlaying(false);
       }
 
       setCurrentStation(station);
@@ -1376,8 +1393,8 @@ function App() {
           .then(() => setIsPlaying(true))
           .catch((err) => {
             if (err.name === "NotAllowedError") {
-              console.error("Playback failed: User interaction required");
-            } else if (err.name !== "AbortError") {
+              console.warn("Playback failed: User interaction required");
+            } else {
               console.error("Playback failed:", err);
             }
           });
@@ -1385,6 +1402,7 @@ function App() {
     }
   };
 
+  // Handle volume slider
   const handleVolumeChange = (e) => {
     const newVolume = parseFloat(e.target.value);
     setVolume(newVolume);
@@ -1392,36 +1410,109 @@ function App() {
       audioRef.current.volume = newVolume;
     }
   };
+  const muteVolume = () => {
+    setVolume(0);
+    if (audioRef.current) {
+      audioRef.current.volume = 0;
+    }
+  };
+  // Adjust volume by delta
+  const adjustVolume = (delta) => {
+    const newVolume = Math.max(0, Math.min(1, volume + delta));
+    setVolume(newVolume);
+    if (audioRef.current) {
+      audioRef.current.volume = newVolume;
+    }
+  };
+
+  // CSS-in-JS for Static UI (when dynamic background is off)
+  const staticUIStyles = {
+    container: {
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      width: "100%",
+      maxWidth: "500px",
+      margin: "40px auto",
+      padding: "0 16px",
+      flex: 1,
+    },
+    card: {
+      background: "rgba(255, 255, 255, 0.1)",
+      backdropFilter: "blur(10px)",
+      WebkitBackdropFilter: "blur(10px)",
+      padding: "30px",
+      borderRadius: "16px",
+      boxShadow: "0 4px 16px rgba(0, 0, 0, 0.2)",
+      textAlign: "center",
+      width: "100%",
+      color: "#ffffff",
+      maxWidth: "400px",
+    },
+    title: {
+      fontSize: "1.5rem",
+      margin: "0 0 10px",
+      fontWeight: "600",
+      color: "#fbbf24",
+    },
+    text: {
+      fontSize: "1rem",
+      color: "#e2e8f0",
+      margin: "8px 0",
+      lineHeight: "1.6",
+    },
+  };
 
   return (
     <div
-      className="App"
+      className={`App ${isDarkMode ? "dark" : "light"} ${
+        dynamicBg ? "dynamic-bg" : "static-bg"
+      }`}
       style={{
-        background: currentStation?.gradient || "linear-gradient(135deg, #1a1a2e, #16213e)",
+        background:
+          dynamicBg && currentStation?.gradient
+            ? currentStation.gradient
+            : "none",
       }}
     >
-      {/* Header with Title, About, and Theme */}
+      {/* Header */}
       <header className="header">
         <div className="header-left">
           <h1>Abd Global Radio</h1>
           <p>Live from around the world 🌍</p>
         </div>
-     
       </header>
 
-      {/* Now Playing */}
-      {currentStation && (
+      {/* Static UI (CSS-in-JS) when Dynamic Background is OFF */}
+      {!dynamicBg && (
+        <div style={staticUIStyles.container}>
+          <div style={staticUIStyles.card}>
+            <h3 style={staticUIStyles.title}>Welcome to Radio</h3>
+            <p style={staticUIStyles.text}>
+              Background animations are disabled.
+            </p>
+            <p style={staticUIStyles.text}>
+              Play a station to start listening.
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* Now Playing (only if dynamic background is ON) */}
+      {dynamicBg && currentStation && (
         <div className="now-playing">
           <h2>{currentStation.name}</h2>
-          <p className="meta">{artist} • {title}</p>
+          <p className="meta">
+            {artist} • {title}
+          </p>
           <p className={isPlaying ? "status playing" : "status paused"}>
             {isPlaying ? "▶️ Streaming" : "⏸ Paused"}
           </p>
         </div>
       )}
 
-      {/* Waveform */}
-      {isPlaying && (
+      {/* Sound Wave Visualizer */}
+      {dynamicBg && isPlaying && (
         <div className="visualizer-container">
           <div className="waveform">
             <div className="wave"></div>
@@ -1434,13 +1525,34 @@ function App() {
         </div>
       )}
 
-      {/* Volume */}
+      {/* Volume Controls */}
       <div className="volume-control">
         <label>Volume</label>
         <div className="volume-row">
-          <span onClick={() => setVolume(0)}>🔇</span>
-          <span onClick={() => setVolume(0.5)}>🔉</span>
-          <span onClick={() => setVolume(1)}>🔊</span>
+          <span
+            onClick={muteVolume}
+            className="vol-icon"
+            role="button"
+            aria-label="Mute Volume"
+          >
+            🔇
+          </span>
+          <span
+            onClick={() => adjustVolume(-0.1)}
+            className="vol-icon"
+            role="button"
+            aria-label="Decrease Volume"
+          >
+            🔉
+          </span>
+          <span
+            onClick={() => adjustVolume(0.1)}
+            className="vol-icon"
+            role="button"
+            aria-label="Increase Volume"
+          >
+            🔊
+          </span>
           <input
             type="range"
             min="0"
@@ -1449,18 +1561,22 @@ function App() {
             value={volume}
             onChange={handleVolumeChange}
             className="slider"
+            aria-label="Volume Slider"
           />
         </div>
       </div>
 
-      {/* Stations */}
+      {/* Stations List */}
       <div className="stations">
         {STATIONS.map((station) => {
           const isCurrent = currentStation?.id === station.id;
           const isPlayingNow = isCurrent && isPlaying;
 
           return (
-            <div key={station.id} className={`station ${isCurrent ? "active" : ""}`}>
+            <div
+              key={station.id}
+              className={`station ${isCurrent ? "active" : ""}`}
+            >
               <div className="station-info">
                 <span className="flag">{COUNTRY_FLAGS[station.country]}</span>
                 <span>{station.name}</span>
@@ -1468,6 +1584,7 @@ function App() {
               <button
                 onClick={() => toggleStation(station)}
                 className={`play-btn ${isPlayingNow ? "pause" : "play"}`}
+                aria-label={isPlayingNow ? "Pause" : "Play"}
               >
                 {isPlayingNow ? "⏸ Pause" : "▶ Play"}
               </button>
@@ -1476,36 +1593,51 @@ function App() {
         })}
       </div>
 
-    {/* Footer with clickable text */}
-<footer className="footer">
-  <div className="footer-content">
-    <span
-      className="footer-link"
-      onClick={() => setShowAbout(true)}
-      style={{ cursor: "pointer" }}
-      aria-label="About this app"
-    >
-      ℹ️ About
-    </span>
-    <span className="footer-separator">•</span>
-    <span
-      className="footer-link"
-      onClick={toggleTheme}
-      style={{ cursor: "pointer" }}
-      aria-label={isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
-    >
-      {isDarkMode ? "☀️ Light" : "🌙 Dark"}
-    </span>
-  </div>
-  <div className="footer-text">
-  <strong> 
-      Spartaw</strong> One Radio • Works Offline
-  </div>
-</footer>
+      {/* Footer */}
+      <footer className="footer">
+        <div className="footer-content">
+          <span
+            className="footer-link"
+            onClick={() => setShowAbout(true)}
+            role="button"
+            aria-label="About this app"
+          >
+            ℹ️ About
+          </span>
+          <span className="footer-separator">•</span>
+          <span
+            className="footer-link"
+            onClick={toggleTheme}
+            role="button"
+            aria-label={
+              isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"
+            }
+          >
+            {isDarkMode ? "☀️ Light" : "🌙 Dark"}
+          </span>
+          <span className="footer-separator">•</span>
+          <span
+            className="footer-link"
+            onClick={toggleDynamicBg}
+            role="button"
+            aria-label={
+              dynamicBg
+                ? "Disable Dynamic Background"
+                : "Enable Dynamic Background"
+            }
+          >
+            {dynamicBg ? "🎨 Dynamic On" : "🎨 Dynamic Off"}
+          </span>
+        </div>
+        <div className="footer-text">
+          <strong>Spartaw</strong> One Radio • Works Offline
+        </div>
+      </footer>
 
-      {/* About Page */}
+      {/* About Modal */}
       {showAbout && <AboutPage onClose={() => setShowAbout(false)} />}
 
+      {/* Audio Element */}
       <audio ref={audioRef} preload="auto" />
     </div>
   );
