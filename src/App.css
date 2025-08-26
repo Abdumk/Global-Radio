@@ -331,10 +331,10 @@ body.light {
     gap: 10px;
   }
 
-  .now-playing,
+  /* .now-playing,
   .visualizer-container {
     display: none;
-  }
+  } */
 
   .volume-control,
   .stations {
