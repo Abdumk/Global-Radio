@@ -18,7 +18,7 @@ body.dark {
 }
 
 body.light {
-  background: linear-gradient(135deg, #e0e7ff, #ffffff);
+  background: linear-gradient(135deg, #1a389c, #16213e); 
   color: #1f2937;
 }
 
@@ -311,7 +311,7 @@ body.dark {
 }
 
 body.light {
-  background: linear-gradient(135deg, #5429a9, #e0e7ff);
+  background: linear-gradient(135deg, #5429a9, #9d3a0c);
   color: #1e293b;
 }
 
