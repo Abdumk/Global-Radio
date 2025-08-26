@@ -51,7 +51,7 @@
 }
 
 .about-content {
-  padding: 500px 30px 30px;
+  padding: 350px 30px 20px;
   color: white;
   text-align: center;
   flex: 1;
@@ -76,16 +76,15 @@
   background-color: #fbbf24;
   border-radius: 3px;
 }
-
 .about-photo {
-  width: 120px;
-  height: 120px;
+  width: 80%; /* Change from fixed width to percentage */
+  max-width: 120px; /* Maintain max width for larger screens */
+  height: auto; /* Allow height to adjust based on width */
   border-radius: 50%;
   border: 4px solid #fbbf24;
   object-fit: cover;
   margin: 0 auto 20px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  
 }
 
 .about-content h1 {
@@ -159,13 +158,20 @@
 /* Responsive */
 @media (max-width: 480px) {
   .about-content {
-    padding: 50px 20px 20px;
+    padding: 350px 20px 20px;
   }
+  
+  .about-photo {
+    width: 80%; /* Keep it responsive */
+    max-width: 100px; /* Adjust max width for smaller screens */
+  }
+  
   .about-done {
     margin: 20px 20px 20px;
     padding: 10px 20px;
     font-size: 0.9rem;
   }
+
   .about-close {
     width: 32px;
     height: 32px;
