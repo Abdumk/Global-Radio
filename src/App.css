@@ -11,16 +11,18 @@ body {
   transition: background 0.6s ease, color 0.3s ease;
   margin: 0;
   padding: 0;
+  background: purple;/* Default background (before theme applied) */
+  color: white; /* optional */
 }
 
 /* === Theme Styles === */
 body.dark {
-  background: linear-gradient(135deg, #8e1e6c, #1c316d);
+  background: linear-gradient(135deg, #f72e05, #0243f5);
   color: white;
 }
 
 body.light {
-  background: linear-gradient(135deg, #c3500e, #9cc424);
+  background: linear-gradient(135deg, #ee2906, #e1af0c);
   color: #1e293b;
 }
 
@@ -33,6 +35,8 @@ body.light {
   justify-content: center;
   text-align: center;
   transition: background 0.6s ease;
+   /* Default background */
+  background: purple;
 }
 
 .App.dynamic-bg {
