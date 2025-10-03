@@ -20,7 +20,6 @@
   max-height: 90vh;
   overflow: hidden;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-  /* border: 1px solid rgba(255, 255, 255, 0.2); */
   position: relative;
   display: flex;
   flex-direction: column;
@@ -51,14 +50,15 @@
 }
 
 .about-content {
-  padding: 400px 30px 20px;
+  padding: 30px 20px 20px;
   color: white;
   text-align: center;
   flex: 1;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
+  align-items: center;
   gap: 15px;
   scrollbar-width: thin;
   scrollbar-color: #fbbf24 transparent;
@@ -67,23 +67,21 @@
 .about-content::-webkit-scrollbar {
   width: 6px;
 }
-
 .about-content::-webkit-scrollbar-track {
   background: transparent;
 }
-
 .about-content::-webkit-scrollbar-thumb {
   background-color: #fbbf24;
   border-radius: 3px;
 }
+
 .about-photo {
-  width: 80%; /* Change from fixed width to percentage */
-  max-width: 120px; /* Maintain max width for larger screens */
-  height: auto; /* Allow height to adjust based on width */
+  width: 120px;
+  height: 120px;
   border-radius: 50%;
   border: 4px solid #fbbf24;
   object-fit: cover;
-  margin: 0 auto 20px;
+  margin: 10px auto 20px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
@@ -104,6 +102,7 @@
 .about-section {
   text-align: left;
   margin: 0;
+  width: 100%;
 }
 
 .about-section h2 {
@@ -122,22 +121,20 @@
 .about-section p {
   color: #b9c5d4;
   line-height: 1.6;
+  margin: 8px 0;
 }
+
 .contact-info a {
   color: #feb703;
   text-decoration: none;
 }
-
 .contact-info a:hover {
   text-decoration: none;
   color: #14fc03;
 }
 
-.about-section p {
-  margin: 8px 0;
-}
 .about-done {
-  margin: 20px 30px 30px;
+  margin: 20px 0 30px;
   padding: 12px 24px;
   background: #fbbf24;
   color: #000;
@@ -157,17 +154,21 @@
 
 /* Responsive */
 @media (max-width: 480px) {
-  .about-content {
-    padding: 350px 20px 20px;
+  .about-container {
+    max-width: 95%;
   }
-  
+
   .about-photo {
-    width: 80%; /* Keep it responsive */
-    max-width: 100px; /* Adjust max width for smaller screens */
+    width: 100px;
+    height: 100px;
   }
-  
+
+  .about-content {
+    padding: 20px 15px;
+    gap: 12px;
+  }
+
   .about-done {
-    margin: 20px 20px 20px;
     padding: 10px 20px;
     font-size: 0.9rem;
   }
