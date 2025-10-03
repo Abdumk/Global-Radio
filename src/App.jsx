@@ -1282,7 +1282,14 @@ const STATIONS = [
     country: "AU",
     gradient: "linear-gradient(135deg, #8b5cf6, #ec4899)",
   },
-
+  { 
+    id: "bbcethiopia", 
+    name: "BBC Amharic (Ethiopia)", 
+    url: "http://stream.live.vc.bbcmedia.co.uk/bbc_world_service", // direct URL
+    country: "ET", 
+    gradient: "linear-gradient(135deg, #0ea5e9, #22c55e)" 
+  },
+  
 ];
 
 const COUNTRY_FLAGS = {
@@ -1292,6 +1299,7 @@ const COUNTRY_FLAGS = {
   DE: "🇩🇪", // Germany
   AU: "🇦🇺", // Australia
   IT: "🇮🇹", // Italy
+  ET: "🇪🇹", // Ethiopia
 };
 
 
